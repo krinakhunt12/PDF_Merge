@@ -34,4 +34,3 @@ venv
 __pycache__/
 *.pyc
 output/
-output/
