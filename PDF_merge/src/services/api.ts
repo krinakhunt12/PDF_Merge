@@ -19,7 +19,8 @@ export interface SplitRangeResponse {
 
 export const mergePDFs = async (
   files: File[],
-  password?: string
+  password?: string,
+  filename?: string
 ): Promise<Blob> => {
   const formData = new FormData()
   files.forEach((file) => {
@@ -27,6 +28,9 @@ export const mergePDFs = async (
   })
   if (password) {
     formData.append('password', password)
+  }
+  if (filename) {
+    formData.append('filename', filename)
   }
 
   const response = await axios.post(`${API_BASE_URL}/merge`, formData, {
@@ -66,7 +70,8 @@ export const splitPDFRange = async (
   file: File,
   startPage: number,
   endPage: number,
-  password?: string
+  password?: string,
+  filename?: string
 ): Promise<Blob> => {
   const formData = new FormData()
   formData.append('file', file)
@@ -74,6 +79,9 @@ export const splitPDFRange = async (
   formData.append('end_page', endPage.toString())
   if (password) {
     formData.append('password', password)
+  }
+  if (filename) {
+    formData.append('filename', filename)
   }
 
   const response = await axios.post(`${API_BASE_URL}/split-range`, formData, {

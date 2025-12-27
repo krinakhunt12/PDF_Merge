@@ -23,15 +23,20 @@ os.makedirs("output", exist_ok=True)
 @app.post("/merge")
 async def merge_api(
     files: list[UploadFile] = File(...),
-    password: str | None = Form(None)
+    password: str | None = Form(None),
+    filename: str = Form("merged.pdf")
 ):
     file_objs = [file.file for file in files]
     output = merge_pdfs(file_objs, password)
+    
+    # Ensure filename has .pdf extension
+    if not filename.endswith('.pdf'):
+        filename += '.pdf'
 
     return FileResponse(
         output,
         media_type="application/pdf",
-        filename="merged.pdf"
+        filename=filename
     )
 
 @app.post("/split-pages")
@@ -50,16 +55,21 @@ async def split_range_api(
     file: UploadFile = File(...),
     start_page: int = Form(...),
     end_page: int = Form(...),
-    password: str | None = Form(None)
+    password: str | None = Form(None),
+    filename: str = Form("split.pdf")
 ):
     output = split_pdf_range(
         file.file, start_page, end_page, password
     )
+    
+    # Ensure filename has .pdf extension
+    if not filename.endswith('.pdf'):
+        filename += '.pdf'
 
     return FileResponse(
         output,
         media_type="application/pdf",
-        filename="split.pdf"
+        filename=filename
     )
 
 if __name__ == "__main__":

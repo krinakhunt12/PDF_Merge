@@ -5,6 +5,7 @@ import { mergePDFs } from '../services/api'
 function MergePDF() {
   const [files, setFiles] = useState<File[]>([])
   const [password, setPassword] = useState('')
+  const [filename, setFilename] = useState('merged.pdf')
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
   const fileInputRef = useRef<HTMLInputElement>(null)
@@ -33,13 +34,13 @@ function MergePDF() {
     setError('')
 
     try {
-      const blob = await mergePDFs(files, password || undefined)
+      const blob = await mergePDFs(files, password || undefined, filename)
       
       // Download the merged PDF
       const url = window.URL.createObjectURL(blob)
       const a = document.createElement('a')
       a.href = url
-      a.download = 'merged.pdf'
+      a.download = filename.endsWith('.pdf') ? filename : `${filename}.pdf`
       document.body.appendChild(a)
       a.click()
       window.URL.revokeObjectURL(url)
@@ -48,6 +49,7 @@ function MergePDF() {
       // Reset form
       setFiles([])
       setPassword('')
+      setFilename('merged.pdf')
       if (fileInputRef.current) {
         fileInputRef.current.value = ''
       }
@@ -81,6 +83,7 @@ function MergePDF() {
           multiple
           onChange={handleFileChange}
           className="hidden"
+          aria-label="Upload PDF files"
         />
       </div>
 
@@ -103,6 +106,7 @@ function MergePDF() {
               <button
                 onClick={() => removeFile(index)}
                 className="text-red-400 hover:text-red-300 transition-colors"
+                aria-label="Remove file"
               >
                 <X className="w-5 h-5" />
               </button>
@@ -122,6 +126,21 @@ function MergePDF() {
           value={password}
           onChange={(e) => setPassword(e.target.value)}
           placeholder="Enter password to protect merged PDF"
+          className="w-full px-4 py-2 bg-gray-700 text-white rounded-lg border border-gray-600 focus:border-blue-500 focus:outline-none"
+        />
+      </div>
+
+      {/* Filename Input */}
+      <div>
+        <label className="flex items-center gap-2 text-white mb-2">
+          <FileText className="w-4 h-4" />
+          Output Filename
+        </label>
+        <input
+          type="text"
+          value={filename}
+          onChange={(e) => setFilename(e.target.value)}
+          placeholder="merged.pdf"
           className="w-full px-4 py-2 bg-gray-700 text-white rounded-lg border border-gray-600 focus:border-blue-500 focus:outline-none"
         />
       </div>
