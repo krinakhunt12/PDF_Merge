@@ -107,8 +107,8 @@ function SplitPDFRange() {
   return (
     <div className="space-y-6">
       <div>
-        <h2 className="text-2xl font-bold text-white mb-2">Split PDF by Range</h2>
-        <p className="text-gray-400">Extract specific pages from a PDF document</p>
+        <h2 className="text-xl sm:text-2xl font-bold text-white mb-2">Split PDF by Range</h2>
+        <p className="text-gray-400 text-sm sm:text-base">Extract specific pages from a PDF document</p>
       </div>
 
       {/* File Upload Area */}
@@ -217,7 +217,7 @@ function SplitPDFRange() {
       <button
         onClick={handleSplit}
         disabled={loading || !file || !startPage || !endPage}
-        className="w-full bg-blue-600 hover:bg-blue-700 disabled:bg-gray-600 disabled:cursor-not-allowed text-white font-medium py-3 px-6 rounded-lg transition-colors flex items-center justify-center gap-2"
+        className="w-full bg-blue-600 hover:bg-blue-700 disabled:bg-gray-600 disabled:cursor-not-allowed text-white font-medium py-3 px-4 sm:px-6 rounded-lg transition-colors flex items-center justify-center gap-2 text-sm sm:text-base"
       >
         {loading ? (
           <>

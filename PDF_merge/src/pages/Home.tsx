@@ -147,19 +147,19 @@ function Home() {
               <FileText className="w-16 h-16 text-blue-400 animate-bounce" />
               <Sparkles className="w-6 h-6 text-yellow-400 absolute -top-2 -right-2 animate-spin-slow" />
             </div>
-            <h1 className="text-6xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-blue-400 via-purple-400 to-pink-400">
+            <h1 className="text-4xl sm:text-5xl md:text-6xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-blue-400 via-purple-400 to-pink-400">
               PDF Operations
             </h1>
           </div>
-          <p className="text-gray-300 text-xl max-w-2xl mx-auto leading-relaxed">
-            Professional PDF tools for merging, splitting, and managing documents with ease. 
+          <p className="text-gray-300 text-base sm:text-lg md:text-xl max-w-2xl mx-auto leading-relaxed">
+            Professional PDF tools for merging, splitting, and managing documents with ease.
             Fast, secure, and completely free.
           </p>
         </header>
 
         {/* Stats Section */}
         <div className="max-w-6xl mx-auto mb-16">
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6">
             {stats.map((stat, index) => (
               <div
                 key={index}
@@ -185,7 +185,7 @@ function Home() {
             <h2 className="text-3xl font-bold text-white mb-3">Why Choose Our PDF Tools?</h2>
             <p className="text-gray-400 max-w-2xl mx-auto">Everything you need to work with PDFs efficiently and securely</p>
           </div>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {features.map((feature, index) => (
               <div
                 key={index}
@@ -235,11 +235,11 @@ function Home() {
         </div>
 
         {/* Tab Navigation */}
-        <div className="max-w-5xl mx-auto mb-8">
+        <div className="max-w-5xl mx-auto mb-8 px-2 sm:px-0">
           <div className="flex flex-col sm:flex-row gap-3 bg-gray-800/50 p-3 rounded-xl backdrop-blur-sm border border-gray-700/50">
             <button
               onClick={() => setActiveTab('merge')}
-              className={`flex-1 py-4 px-6 rounded-lg font-semibold transition-all duration-300 ${
+              className={`flex-1 py-3 px-4 sm:py-4 sm:px-6 rounded-lg font-semibold text-sm sm:text-base transition-all duration-300 ${
                 activeTab === 'merge'
                   ? 'bg-gradient-to-r from-blue-600 to-blue-500 text-white shadow-lg shadow-blue-500/50 transform scale-105'
                   : 'bg-transparent text-gray-300 hover:bg-gray-700/50 hover:text-white'
@@ -252,7 +252,7 @@ function Home() {
             </button>
             <button
               onClick={() => setActiveTab('split-pages')}
-              className={`flex-1 py-4 px-6 rounded-lg font-semibold transition-all duration-300 ${
+              className={`flex-1 py-3 px-4 sm:py-4 sm:px-6 rounded-lg font-semibold text-sm sm:text-base transition-all duration-300 ${
                 activeTab === 'split-pages'
                   ? 'bg-gradient-to-r from-purple-600 to-purple-500 text-white shadow-lg shadow-purple-500/50 transform scale-105'
                   : 'bg-transparent text-gray-300 hover:bg-gray-700/50 hover:text-white'
@@ -265,7 +265,7 @@ function Home() {
             </button>
             <button
               onClick={() => setActiveTab('split-range')}
-              className={`flex-1 py-4 px-6 rounded-lg font-semibold transition-all duration-300 ${
+              className={`flex-1 py-3 px-4 sm:py-4 sm:px-6 rounded-lg font-semibold text-sm sm:text-base transition-all duration-300 ${
                 activeTab === 'split-range'
                   ? 'bg-gradient-to-r from-pink-600 to-pink-500 text-white shadow-lg shadow-pink-500/50 transform scale-105'
                   : 'bg-transparent text-gray-300 hover:bg-gray-700/50 hover:text-white'

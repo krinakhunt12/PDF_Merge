@@ -10,6 +10,7 @@ function SplitPDFPages() {
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
   const [result, setResult] = useState<string[] | null>(null)
+  const [filename, setFilename] = useState('split_pages.zip')
   const fileInputRef = useRef<HTMLInputElement>(null)
   const toast = useToast()
 
@@ -46,9 +47,24 @@ function SplitPDFPages() {
     setError('')
 
     try {
-      const response = await splitPDFPages(file, password || undefined)
-      setResult(response.files)
-      toast.success(`PDF split into ${response.files.length} pages successfully!`)
+      const response = await splitPDFPages(file, password, filename)
+      // If server returned a Blob (zip), download it
+      if (response instanceof Blob) {
+        const blobUrl = window.URL.createObjectURL(response)
+        const a = document.createElement('a')
+        a.href = blobUrl
+        const downloadName = filename && filename.endsWith('.zip') ? filename : `${filename}.zip`
+        a.download = downloadName
+        document.body.appendChild(a)
+        a.click()
+        window.URL.revokeObjectURL(blobUrl)
+        document.body.removeChild(a)
+        toast.success('PDF split pages downloaded')
+        setResult(null)
+      } else {
+        setResult(response.files)
+        toast.success(`PDF split into ${response.files.length} pages successfully!`)
+      }
       logger.info('PDF split pages operation completed successfully')
     } catch (err) {
       const errorMsg = 'Failed to split PDF. Please try again.'
@@ -63,8 +79,8 @@ function SplitPDFPages() {
   return (
     <div className="space-y-6">
       <div>
-        <h2 className="text-2xl font-bold text-white mb-2">Split PDF into Pages</h2>
-        <p className="text-gray-400">Extract all pages from a PDF as individual files</p>
+        <h2 className="text-xl sm:text-2xl font-bold text-white mb-2">Split PDF into Pages</h2>
+        <p className="text-gray-400 text-sm sm:text-base">Extract all pages from a PDF as individual files</p>
       </div>
 
       {/* File Upload Area */}
@@ -122,6 +138,21 @@ function SplitPDFPages() {
         />
       </div>
 
+      {/* Output Filename (zip) */}
+      <div>
+        <label className="flex items-center gap-2 text-white mb-2">
+          <FileText className="w-4 h-4" />
+          Output Filename (zip)
+        </label>
+        <input
+          type="text"
+          value={filename}
+          onChange={(e) => setFilename(e.target.value)}
+          placeholder="split_pages.zip"
+          className="w-full px-4 py-2 bg-gray-700 text-white rounded-lg border border-gray-600 focus:border-blue-500 focus:outline-none"
+        />
+      </div>
+
       {/* Error Message */}
       {error && (
         <div className="bg-red-500/10 border border-red-500 text-red-400 p-3 rounded-lg">
@@ -155,7 +186,7 @@ function SplitPDFPages() {
       <button
         onClick={handleSplit}
         disabled={loading || !file}
-        className="w-full bg-blue-600 hover:bg-blue-700 disabled:bg-gray-600 disabled:cursor-not-allowed text-white font-medium py-3 px-6 rounded-lg transition-colors flex items-center justify-center gap-2"
+        className="w-full bg-blue-600 hover:bg-blue-700 disabled:bg-gray-600 disabled:cursor-not-allowed text-white font-medium py-3 px-4 sm:px-6 rounded-lg transition-colors flex items-center justify-center gap-2 text-sm sm:text-base"
       >
         {loading ? (
           <>

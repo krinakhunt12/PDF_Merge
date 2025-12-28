@@ -61,8 +61,9 @@ export const mergePDFs = async (
 
 export const splitPDFPages = async (
   file: File,
-  password?: string
-): Promise<SplitPagesResponse> => {
+  password?: string,
+  filename?: string
+): Promise<SplitPagesResponse | Blob> => {
   logger.info('Starting PDF split pages operation', { filename: file.name })
   
   const formData = new FormData()
@@ -70,8 +71,30 @@ export const splitPDFPages = async (
   if (password) {
     formData.append('password', password)
   }
+  if (filename) {
+    formData.append('filename', filename)
+  }
 
   try {
+    // If filename provided, server will return a zip blob for download
+    if (filename) {
+      const response = await withTimeout(
+        axios.post(`${API_BASE_URL}/split-pages`, formData, {
+          responseType: 'blob',
+          headers: {
+            'Content-Type': 'multipart/form-data',
+          },
+        }),
+        {
+          timeout: DEFAULT_TIMEOUT,
+          timeoutMessage: 'PDF split operation timed out. Please try again.',
+        }
+      )
+
+      logger.info('PDF split pages completed successfully (zip)')
+      return response.data
+    }
+
     const response = await withTimeout(
       axios.post<SplitPagesResponse>(
         `${API_BASE_URL}/split-pages`,

@@ -6,6 +6,8 @@ import os
 from merge_pdfs import merge_pdfs
 from split_pdf_pages import split_pdf_pages
 from split_pdf_range import split_pdf_range
+import zipfile
+import tempfile
 
 app = FastAPI(title="PDF Tools API")
 
@@ -42,9 +44,44 @@ async def merge_api(
 @app.post("/split-pages")
 async def split_pages_api(
     file: UploadFile = File(...),
-    password: str | None = Form(None)
+    password: str | None = Form(None),
+    filename: str | None = Form(None),
 ):
-    files = split_pdf_pages(file.file, password)
+    """Split PDF into pages. If `filename` is provided and ends with .zip (or not),
+    the endpoint will return a zip archive containing all split page PDFs for download.
+    Otherwise it returns JSON with generated file paths.
+    """
+    # Determine prefix to use for output PDF names
+    prefix = None
+    if filename:
+        # If user provided e.g. mypages.zip or mypages, use 'mypages' as prefix
+        prefix = filename[:-4] if filename.lower().endswith('.zip') else filename
+
+    files = split_pdf_pages(file.file, password, filename_prefix=prefix)
+
+    if filename:
+        # Ensure .zip extension
+        zip_name = filename if filename.lower().endswith('.zip') else f"{filename}.zip"
+        zip_path = os.path.join('output', zip_name)
+        # Create zip containing the generated PDFs
+        with zipfile.ZipFile(zip_path, 'w', compression=zipfile.ZIP_DEFLATED) as zf:
+            for fpath in files:
+                zf.write(fpath, arcname=os.path.basename(fpath))
+
+        # Optionally remove individual files to keep output folder tidy
+        for fpath in files:
+            try:
+                os.remove(fpath)
+            except Exception:
+                pass
+
+        return FileResponse(
+            zip_path,
+            media_type='application/zip',
+            filename=zip_name
+        )
+
+    # Default response: return JSON with list of files
     return {
         "message": "PDF split successfully",
         "files": files
