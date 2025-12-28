@@ -1,6 +1,8 @@
 import { useState, useRef } from 'react'
 import { Upload, Download, FileText, Lock, X, Scissors, Loader2 } from 'lucide-react'
 import { splitPDFRange } from '../services/api'
+import { useToast } from '../utils/Toast'
+import logger from '../utils/AppLogger'
 
 function SplitPDFRange() {
   const [file, setFile] = useState<File | null>(null)
@@ -11,6 +13,7 @@ function SplitPDFRange() {
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
   const fileInputRef = useRef<HTMLInputElement>(null)
+  const toast = useToast()
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
@@ -33,7 +36,9 @@ function SplitPDFRange() {
 
   const handleSplit = async () => {
     if (!file) {
-      setError('Please select a PDF file')
+      const errorMsg = 'Please select a PDF file'
+      setError(errorMsg)
+      toast.error(errorMsg)
       return
     }
 
@@ -41,17 +46,23 @@ function SplitPDFRange() {
     const end = parseInt(endPage)
 
     if (!start || !end) {
-      setError('Please enter valid page numbers')
+      const errorMsg = 'Please enter valid page numbers'
+      setError(errorMsg)
+      toast.error(errorMsg)
       return
     }
 
     if (start < 1) {
-      setError('Start page must be at least 1')
+      const errorMsg = 'Start page must be at least 1'
+      setError(errorMsg)
+      toast.error(errorMsg)
       return
     }
 
     if (end < start) {
-      setError('End page must be greater than or equal to start page')
+      const errorMsg = 'End page must be greater than or equal to start page'
+      setError(errorMsg)
+      toast.error(errorMsg)
       return
     }
 
@@ -71,6 +82,9 @@ function SplitPDFRange() {
       window.URL.revokeObjectURL(url)
       document.body.removeChild(a)
 
+      toast.success('PDF split successfully!')
+      logger.info('PDF split range operation completed successfully')
+
       // Reset form
       setFile(null)
       setStartPage('')
@@ -81,8 +95,10 @@ function SplitPDFRange() {
         fileInputRef.current.value = ''
       }
     } catch (err) {
-      setError('Failed to split PDF. Please check your page range and try again.')
-      console.error(err)
+      const errorMsg = 'Failed to split PDF. Please check your page range and try again.'
+      setError(errorMsg)
+      toast.error(errorMsg)
+      logger.error('PDF split range operation failed', err)
     } finally {
       setLoading(false)
     }

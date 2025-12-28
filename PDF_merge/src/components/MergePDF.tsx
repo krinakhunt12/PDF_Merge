@@ -1,6 +1,8 @@
 import { useState, useRef } from 'react'
 import { Upload, Download, Lock, X, FileText, Loader2 } from 'lucide-react'
 import { mergePDFs } from '../services/api'
+import { useToast } from '../utils/Toast'
+import logger from '../utils/AppLogger'
 
 function MergePDF() {
   const [files, setFiles] = useState<File[]>([])
@@ -9,6 +11,7 @@ function MergePDF() {
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
   const fileInputRef = useRef<HTMLInputElement>(null)
+  const toast = useToast()
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files) {
@@ -26,7 +29,9 @@ function MergePDF() {
 
   const handleMerge = async () => {
     if (files.length < 2) {
-      setError('Please select at least 2 PDF files to merge')
+      const errorMsg = 'Please select at least 2 PDF files to merge'
+      setError(errorMsg)
+      toast.error(errorMsg)
       return
     }
 
@@ -46,6 +51,9 @@ function MergePDF() {
       window.URL.revokeObjectURL(url)
       document.body.removeChild(a)
 
+      toast.success('PDFs merged successfully!')
+      logger.info('PDF merge operation completed successfully')
+
       // Reset form
       setFiles([])
       setPassword('')
@@ -54,8 +62,10 @@ function MergePDF() {
         fileInputRef.current.value = ''
       }
     } catch (err) {
-      setError('Failed to merge PDFs. Please try again.')
-      console.error(err)
+      const errorMsg = 'Failed to merge PDFs. Please try again.'
+      setError(errorMsg)
+      toast.error(errorMsg)
+      logger.error('PDF merge operation failed', err)
     } finally {
       setLoading(false)
     }

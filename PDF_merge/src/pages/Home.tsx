@@ -1,7 +1,5 @@
-import { useState } from 'react'
-import MergePDF from '../components/MergePDF'
-import SplitPDFPages from '../components/SplitPDFPages'
-import SplitPDFRange from '../components/SplitPDFRange'
+import { useState, lazy, Suspense } from 'react'
+import { Loader2 } from 'lucide-react'
 import { 
   FileText, 
   Sparkles, 
@@ -20,6 +18,11 @@ import {
   Users,
   Star
 } from 'lucide-react'
+
+// Lazy load components for better performance
+const MergePDF = lazy(() => import('../components/MergePDF'))
+const SplitPDFPages = lazy(() => import('../components/SplitPDFPages'))
+const SplitPDFRange = lazy(() => import('../components/SplitPDFRange'))
 
 type TabType = 'merge' | 'split-pages' | 'split-range'
 
@@ -279,9 +282,17 @@ function Home() {
         {/* Main Content Card */}
         <div className="max-w-5xl mx-auto">
           <div className="bg-gray-800/40 backdrop-blur-xl rounded-2xl shadow-2xl p-8 md:p-12 border border-gray-700/50 hover:border-gray-600/50 transition-all duration-300">
-            {activeTab === 'merge' && <MergePDF />}
-            {activeTab === 'split-pages' && <SplitPDFPages />}
-            {activeTab === 'split-range' && <SplitPDFRange />}
+            <Suspense
+              fallback={
+                <div className="flex items-center justify-center py-12">
+                  <Loader2 className="w-8 h-8 text-blue-500 animate-spin" />
+                </div>
+              }
+            >
+              {activeTab === 'merge' && <MergePDF />}
+              {activeTab === 'split-pages' && <SplitPDFPages />}
+              {activeTab === 'split-range' && <SplitPDFRange />}
+            </Suspense>
           </div>
         </div>
 

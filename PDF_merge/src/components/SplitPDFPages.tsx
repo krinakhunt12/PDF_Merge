@@ -1,6 +1,8 @@
 import { useState, useRef } from 'react'
 import { Upload, FileText, Lock, X, Scissors, Loader2 } from 'lucide-react'
 import { splitPDFPages } from '../services/api'
+import { useToast } from '../utils/Toast'
+import logger from '../utils/AppLogger'
 
 function SplitPDFPages() {
   const [file, setFile] = useState<File | null>(null)
@@ -9,6 +11,7 @@ function SplitPDFPages() {
   const [error, setError] = useState('')
   const [result, setResult] = useState<string[] | null>(null)
   const fileInputRef = useRef<HTMLInputElement>(null)
+  const toast = useToast()
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
@@ -33,7 +36,9 @@ function SplitPDFPages() {
 
   const handleSplit = async () => {
     if (!file) {
-      setError('Please select a PDF file')
+      const errorMsg = 'Please select a PDF file'
+      setError(errorMsg)
+      toast.error(errorMsg)
       return
     }
 
@@ -43,9 +48,13 @@ function SplitPDFPages() {
     try {
       const response = await splitPDFPages(file, password || undefined)
       setResult(response.files)
+      toast.success(`PDF split into ${response.files.length} pages successfully!`)
+      logger.info('PDF split pages operation completed successfully')
     } catch (err) {
-      setError('Failed to split PDF. Please try again.')
-      console.error(err)
+      const errorMsg = 'Failed to split PDF. Please try again.'
+      setError(errorMsg)
+      toast.error(errorMsg)
+      logger.error('PDF split pages operation failed', err)
     } finally {
       setLoading(false)
     }
@@ -73,6 +82,7 @@ function SplitPDFPages() {
             accept="application/pdf"
             onChange={handleFileChange}
             className="hidden"
+            aria-label="Upload PDF file"
           />
         </div>
       ) : (
@@ -89,6 +99,8 @@ function SplitPDFPages() {
           <button
             onClick={removeFile}
             className="text-red-400 hover:text-red-300 transition-colors"
+            aria-label="Remove file"
+            title="Remove file"
           >
             <X className="w-5 h-5" />
           </button>

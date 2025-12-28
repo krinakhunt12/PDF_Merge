@@ -1,4 +1,6 @@
 import axios from 'axios'
+import { withTimeout, DEFAULT_TIMEOUT } from '../utils/loadingTimeout'
+import logger from '../utils/AppLogger'
 
 const API_BASE_URL = 'VITE_API_BASE_URL' in import.meta.env ? import.meta.env.VITE_API_BASE_URL : 'http://127.0.0.1:8000'
 
@@ -22,6 +24,8 @@ export const mergePDFs = async (
   password?: string,
   filename?: string
 ): Promise<Blob> => {
+  logger.info('Starting PDF merge operation', { fileCount: files.length, filename })
+  
   const formData = new FormData()
   files.forEach((file) => {
     formData.append('files', file)
@@ -33,37 +37,63 @@ export const mergePDFs = async (
     formData.append('filename', filename)
   }
 
-  const response = await axios.post(`${API_BASE_URL}/merge`, formData, {
-    responseType: 'blob',
-    headers: {
-      'Content-Type': 'multipart/form-data',
-    },
-  })
+  try {
+    const response = await withTimeout(
+      axios.post(`${API_BASE_URL}/merge`, formData, {
+        responseType: 'blob',
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+      }),
+      {
+        timeout: DEFAULT_TIMEOUT,
+        timeoutMessage: 'PDF merge operation timed out. Please try again.',
+      }
+    )
 
-  return response.data
+    logger.info('PDF merge completed successfully')
+    return response.data
+  } catch (error) {
+    logger.error('PDF merge failed', error)
+    throw error
+  }
 }
 
 export const splitPDFPages = async (
   file: File,
   password?: string
 ): Promise<SplitPagesResponse> => {
+  logger.info('Starting PDF split pages operation', { filename: file.name })
+  
   const formData = new FormData()
   formData.append('file', file)
   if (password) {
     formData.append('password', password)
   }
 
-  const response = await axios.post<SplitPagesResponse>(
-    `${API_BASE_URL}/split-pages`,
-    formData,
-    {
-      headers: {
-        'Content-Type': 'multipart/form-data',
-      },
-    }
-  )
+  try {
+    const response = await withTimeout(
+      axios.post<SplitPagesResponse>(
+        `${API_BASE_URL}/split-pages`,
+        formData,
+        {
+          headers: {
+            'Content-Type': 'multipart/form-data',
+          },
+        }
+      ),
+      {
+        timeout: DEFAULT_TIMEOUT,
+        timeoutMessage: 'PDF split operation timed out. Please try again.',
+      }
+    )
 
-  return response.data
+    logger.info('PDF split pages completed successfully')
+    return response.data
+  } catch (error) {
+    logger.error('PDF split pages failed', error)
+    throw error
+  }
 }
 
 export const splitPDFRange = async (
@@ -73,6 +103,12 @@ export const splitPDFRange = async (
   password?: string,
   filename?: string
 ): Promise<Blob> => {
+  logger.info('Starting PDF split range operation', { 
+    filename: file.name, 
+    startPage, 
+    endPage 
+  })
+  
   const formData = new FormData()
   formData.append('file', file)
   formData.append('start_page', startPage.toString())
@@ -84,12 +120,24 @@ export const splitPDFRange = async (
     formData.append('filename', filename)
   }
 
-  const response = await axios.post(`${API_BASE_URL}/split-range`, formData, {
-    responseType: 'blob',
-    headers: {
-      'Content-Type': 'multipart/form-data',
-    },
-  })
+  try {
+    const response = await withTimeout(
+      axios.post(`${API_BASE_URL}/split-range`, formData, {
+        responseType: 'blob',
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+      }),
+      {
+        timeout: DEFAULT_TIMEOUT,
+        timeoutMessage: 'PDF split range operation timed out. Please try again.',
+      }
+    )
 
-  return response.data
+    logger.info('PDF split range completed successfully')
+    return response.data
+  } catch (error) {
+    logger.error('PDF split range failed', error)
+    throw error
+  }
 }
