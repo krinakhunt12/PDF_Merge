@@ -27,7 +27,8 @@ class MockIntersectionObserver implements IntersectionObserver {
   }
 }
 
-globalThis.IntersectionObserver = MockIntersectionObserver as any;
+// Mock IntersectionObserver globally
+(globalThis as typeof globalThis & { IntersectionObserver: typeof MockIntersectionObserver }).IntersectionObserver = MockIntersectionObserver;
 
 // Extend expect matchers
 expect.extend({})
