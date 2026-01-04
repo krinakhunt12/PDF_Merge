@@ -48,13 +48,10 @@ export async function withTimeout<T>(
  * Hook-friendly timeout wrapper for async operations
  * @param asyncFn - Async function to execute
  * @param options - Timeout configuration options
- * @returns Wrapped function with timeout
- */
-export function createTimeoutWrapper<T extends (...args: any[]) => Promise<any>>(
+export function createTimeoutWrapper<T extends (...args: unknown[]) => Promise<unknown>>(
   asyncFn: T,
   options: TimeoutOptions = {}
-): T {
-  return (async (...args: any[]) => {
+  return (async (...args: unknown[]) => {
     return withTimeout(asyncFn(...args), options);
   }) as T;
 }
