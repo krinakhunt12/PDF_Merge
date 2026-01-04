@@ -418,7 +418,7 @@ function Home() {
                   <span className="text-purple-400 font-semibold">TypeScript</span>
                 </p>
                 <p className="text-gray-500 text-sm">
-                  © 2024 PDF Operations Tool. All rights reserved. | Version 2.0.0
+                  © 2026 PDF Operations Tool. All rights reserved. | Version 2.0.0
                 </p>
               </div>
             </div>
