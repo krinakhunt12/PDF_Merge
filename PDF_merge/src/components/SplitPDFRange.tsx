@@ -144,7 +144,7 @@ function SplitPDFRange() {
           </div>
           <button
             onClick={removeFile}
-            className="text-red-400 hover:text-red-300 transition-colors"
+            className="text-red-400 hover:text-red-300 transition-colors cusor-pointer"
             aria-label={t('button.remove')}
           >
             <X className="w-5 h-5" />
