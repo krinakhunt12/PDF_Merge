@@ -1,4 +1,5 @@
 import { useState, useRef } from 'react'
+import { useTranslation } from 'react-i18next'
 import { Upload, FileText, Lock, X, Scissors, Loader2 } from 'lucide-react'
 import { splitPDFPages } from '../services/api'
 import { useToast } from '../utils/Toast'
@@ -13,6 +14,7 @@ function SplitPDFPages() {
   const [filename, setFilename] = useState('split_pages.zip')
   const fileInputRef = useRef<HTMLInputElement>(null)
   const toast = useToast()
+  const { t } = useTranslation()
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
@@ -22,7 +24,7 @@ function SplitPDFPages() {
         setError('')
         setResult(null)
       } else {
-        setError('Please select a valid PDF file')
+        setError(t('errors.selectFile'))
       }
     }
   }
@@ -37,7 +39,7 @@ function SplitPDFPages() {
 
   const handleSplit = async () => {
     if (!file) {
-      const errorMsg = 'Please select a PDF file'
+      const errorMsg = t('errors.selectFile')
       setError(errorMsg)
       toast.error(errorMsg)
       return
@@ -59,15 +61,15 @@ function SplitPDFPages() {
         a.click()
         window.URL.revokeObjectURL(blobUrl)
         document.body.removeChild(a)
-        toast.success('PDF split pages downloaded')
+        toast.success(t('splitPages.resultDownloaded'))
         setResult(null)
       } else {
         setResult(response.files)
-        toast.success(`PDF split into ${response.files.length} pages successfully!`)
+        toast.success(t('success.splitPages', { count: response.files.length }))
       }
       logger.info('PDF split pages operation completed successfully')
     } catch (err) {
-      const errorMsg = 'Failed to split PDF. Please try again.'
+      const errorMsg = t('error.split')
       setError(errorMsg)
       toast.error(errorMsg)
       logger.error('PDF split pages operation failed', err)
@@ -79,8 +81,8 @@ function SplitPDFPages() {
   return (
     <div className="space-y-6">
       <div>
-        <h2 className="text-xl sm:text-2xl font-bold text-white mb-2">Split PDF into Pages</h2>
-        <p className="text-gray-400 text-sm sm:text-base">Extract all pages from a PDF as individual files</p>
+        <h2 className="text-xl sm:text-2xl font-bold text-white mb-2">{t('splitPages.title')}</h2>
+        <p className="text-gray-400 text-sm sm:text-base">{t('splitPages.description')}</p>
       </div>
 
       {/* File Upload Area */}
@@ -90,15 +92,15 @@ function SplitPDFPages() {
           className="border-2 border-dashed border-gray-600 rounded-lg p-8 text-center cursor-pointer hover:border-blue-500 transition-colors"
         >
           <Upload className="w-12 h-12 text-gray-400 mx-auto mb-4" />
-          <p className="text-white mb-2">Click to upload PDF file</p>
-          <p className="text-gray-400 text-sm">or drag and drop</p>
+          <p className="text-white mb-2">{t('splitPages.upload')}</p>
+          <p className="text-gray-400 text-sm">{t('merge.orDrag')}</p>
           <input
             ref={fileInputRef}
             type="file"
             accept="application/pdf"
             onChange={handleFileChange}
             className="hidden"
-            aria-label="Upload PDF file"
+            aria-label={t('splitPages.upload')}
           />
         </div>
       ) : (
@@ -115,8 +117,8 @@ function SplitPDFPages() {
           <button
             onClick={removeFile}
             className="text-red-400 hover:text-red-300 transition-colors"
-            aria-label="Remove file"
-            title="Remove file"
+            aria-label={t('button.remove')}
+            title={t('button.remove')}
           >
             <X className="w-5 h-5" />
           </button>
@@ -127,13 +129,13 @@ function SplitPDFPages() {
       <div>
         <label className="flex items-center gap-2 text-white mb-2">
           <Lock className="w-4 h-4" />
-          Password Protection (Optional)
+          {t('password.placeholder') ? t('password.placeholder') : 'Password Protection (Optional)'}
         </label>
         <input
           type="password"
           value={password}
           onChange={(e) => setPassword(e.target.value)}
-          placeholder="Enter password to protect split PDFs"
+          placeholder={t('password.placeholder')}
           className="w-full px-4 py-2 bg-gray-700 text-white rounded-lg border border-gray-600 focus:border-blue-500 focus:outline-none"
         />
       </div>
@@ -142,13 +144,13 @@ function SplitPDFPages() {
       <div>
         <label className="flex items-center gap-2 text-white mb-2">
           <FileText className="w-4 h-4" />
-          Output Filename (zip)
+          {t('output.filename')} (zip)
         </label>
         <input
           type="text"
           value={filename}
           onChange={(e) => setFilename(e.target.value)}
-          placeholder="split_pages.zip"
+          placeholder={t('output.filename')}
           className="w-full px-4 py-2 bg-gray-700 text-white rounded-lg border border-gray-600 focus:border-blue-500 focus:outline-none"
         />
       </div>
@@ -164,7 +166,7 @@ function SplitPDFPages() {
       {result && (
         <div className="bg-green-500/10 border border-green-500 rounded-lg p-4">
           <h3 className="text-green-400 font-medium mb-2">
-            ✓ PDF split successfully!
+            {t('success.splitPages', { count: result.length })}
           </h3>
           <p className="text-gray-300 text-sm mb-3">
             Generated {result.length} page(s)
@@ -186,17 +188,17 @@ function SplitPDFPages() {
       <button
         onClick={handleSplit}
         disabled={loading || !file}
-        className="w-full bg-blue-600 hover:bg-blue-700 disabled:bg-gray-600 disabled:cursor-not-allowed text-white font-medium py-3 px-4 sm:px-6 rounded-lg transition-colors flex items-center justify-center gap-2 text-sm sm:text-base"
+        className="w-full bg-blue-600 hover:bg-blue-700 disabled:bg-gray-600 disabled:cursor-not-allowed text-white font-medium py-3 px-4 sm:px-6 rounded-lg transition-colors flex items-center justify-center gap-2 text-sm sm:text-base cursor-pointer"
       >
         {loading ? (
           <>
             <Loader2 className="w-5 h-5 animate-spin" />
-            Splitting PDF...
+            {t('splitPages.merging') || 'Splitting PDF...'}
           </>
         ) : (
           <>
             <Scissors className="w-5 h-5" />
-            Split into Pages
+            {t('splitPages.splitButton')}
           </>
         )}
       </button>

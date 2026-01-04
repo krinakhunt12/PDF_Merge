@@ -1,6 +1,7 @@
 import axios from 'axios'
 import { withTimeout, DEFAULT_TIMEOUT } from '../utils/loadingTimeout'
 import logger from '../utils/AppLogger'
+import i18n from '../i18n'
 
 const API_BASE_URL = 'VITE_API_BASE_URL' in import.meta.env ? import.meta.env.VITE_API_BASE_URL : 'http://127.0.0.1:8000'
 
@@ -47,7 +48,7 @@ export const mergePDFs = async (
       }),
       {
         timeout: DEFAULT_TIMEOUT,
-        timeoutMessage: 'PDF merge operation timed out. Please try again.',
+        timeoutMessage: i18n.t('error.timeout.merge'),
       }
     )
 
@@ -87,7 +88,7 @@ export const splitPDFPages = async (
         }),
         {
           timeout: DEFAULT_TIMEOUT,
-          timeoutMessage: 'PDF split operation timed out. Please try again.',
+          timeoutMessage: i18n.t('error.timeout.split'),
         }
       )
 
@@ -107,7 +108,7 @@ export const splitPDFPages = async (
       ),
       {
         timeout: DEFAULT_TIMEOUT,
-        timeoutMessage: 'PDF split operation timed out. Please try again.',
+        timeoutMessage: i18n.t('error.timeout.split'),
       }
     )
 
@@ -153,7 +154,7 @@ export const splitPDFRange = async (
       }),
       {
         timeout: DEFAULT_TIMEOUT,
-        timeoutMessage: 'PDF split range operation timed out. Please try again.',
+        timeoutMessage: i18n.t('error.timeout.splitRange'),
       }
     )
 

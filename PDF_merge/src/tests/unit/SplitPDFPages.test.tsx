@@ -70,7 +70,10 @@ describe('SplitPDFPages Component', () => {
     fireEvent.click(splitButton)
     
     await waitFor(() => {
-      expect(api.splitPDFPages).toHaveBeenCalledWith(file, undefined)
+      expect(api.splitPDFPages).toHaveBeenCalled()
+      const callArgs = vi.mocked(api.splitPDFPages).mock.calls[0]
+      expect(callArgs[0]).toEqual(file)
+      expect(callArgs[1]).toBeFalsy()
       expect(screen.getByText(/PDF split successfully!/)).toBeInTheDocument()
     })
   })

@@ -1,4 +1,5 @@
 import { Component } from 'react';
+import i18n from '../i18n'
 import type { ErrorInfo, ReactNode } from 'react';
 import { AlertTriangle, RefreshCw, Home } from 'lucide-react';
 
@@ -75,11 +76,11 @@ class ErrorBoundary extends Component<Props, State> {
               </div>
 
               <h1 className="text-3xl font-bold text-white mb-3">
-                Oops! Something went wrong
+                {i18n.t('error.title')}
               </h1>
 
               <p className="text-gray-400 mb-6">
-                We're sorry for the inconvenience. The application encountered an unexpected error.
+                {i18n.t('error.description')}
               </p>
 
               {import.meta.env.MODE === 'development' && this.state.error && (
@@ -91,7 +92,7 @@ class ErrorBoundary extends Component<Props, State> {
                     {this.state.errorInfo && (
                       <details className="mt-2">
                         <summary className="text-gray-400 text-sm cursor-pointer hover:text-gray-300">
-                          Stack Trace
+                          {i18n.t('error.stackTrace')}
                         </summary>
                         <pre className="text-gray-500 text-xs mt-2 overflow-auto max-h-40">
                           {this.state.errorInfo.componentStack}
@@ -108,7 +109,7 @@ class ErrorBoundary extends Component<Props, State> {
                   className="flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white font-medium py-3 px-6 rounded-lg transition-colors"
                 >
                   <RefreshCw className="w-5 h-5" />
-                  Try Again
+                  {i18n.t('error.tryAgain')}
                 </button>
 
                 <button
@@ -116,7 +117,7 @@ class ErrorBoundary extends Component<Props, State> {
                   className="flex items-center gap-2 bg-gray-700 hover:bg-gray-600 text-white font-medium py-3 px-6 rounded-lg transition-colors"
                 >
                   <Home className="w-5 h-5" />
-                  Go Home
+                  {i18n.t('error.goHome')}
                 </button>
               </div>
             </div>

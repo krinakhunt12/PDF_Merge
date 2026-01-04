@@ -1,10 +1,12 @@
 import { useState, useRef } from 'react'
+import { useTranslation } from 'react-i18next'
 import { Upload, Download, Lock, X, FileText, Loader2 } from 'lucide-react'
 import { mergePDFs } from '../services/api'
 import { useToast } from '../utils/Toast'
 import logger from '../utils/AppLogger'
 
 function MergePDF() {
+  const { t } = useTranslation()
   const [files, setFiles] = useState<File[]>([])
   const [password, setPassword] = useState('')
   const [filename, setFilename] = useState('merged.pdf')
@@ -29,7 +31,7 @@ function MergePDF() {
 
   const handleMerge = async () => {
     if (files.length < 2) {
-      const errorMsg = 'Please select at least 2 PDF files to merge'
+      const errorMsg = t('errors.selectAtLeastTwo')
       setError(errorMsg)
       toast.error(errorMsg)
       return
@@ -51,7 +53,7 @@ function MergePDF() {
       window.URL.revokeObjectURL(url)
       document.body.removeChild(a)
 
-      toast.success('PDFs merged successfully!')
+      toast.success(t('success.merge'))
       logger.info('PDF merge operation completed successfully')
 
       // Reset form
@@ -62,7 +64,7 @@ function MergePDF() {
         fileInputRef.current.value = ''
       }
     } catch (err) {
-      const errorMsg = 'Failed to merge PDFs. Please try again.'
+      const errorMsg = t('error.merge')
       setError(errorMsg)
       toast.error(errorMsg)
       logger.error('PDF merge operation failed', err)
@@ -74,8 +76,8 @@ function MergePDF() {
   return (
     <div className="space-y-6">
       <div>
-        <h2 className="text-xl sm:text-2xl font-bold text-white mb-2">Merge PDF Files</h2>
-        <p className="text-gray-400 text-sm sm:text-base">Combine multiple PDF files into a single document</p>
+        <h2 className="text-xl sm:text-2xl font-bold text-white mb-2">{t('merge.title')}</h2>
+        <p className="text-gray-400 text-sm sm:text-base">{t('merge.description')}</p>
       </div>
 
       {/* File Upload Area */}
@@ -84,8 +86,8 @@ function MergePDF() {
         className="border-2 border-dashed border-gray-600 rounded-lg p-8 text-center cursor-pointer hover:border-blue-500 transition-colors"
       >
         <Upload className="w-12 h-12 text-gray-400 mx-auto mb-4" />
-        <p className="text-white mb-2">Click to upload PDF files</p>
-        <p className="text-gray-400 text-sm">or drag and drop</p>
+        <p className="text-white mb-2">{t('merge.upload')}</p>
+        <p className="text-gray-400 text-sm">{t('merge.orDrag')}</p>
         <input
           ref={fileInputRef}
           type="file"
@@ -93,14 +95,14 @@ function MergePDF() {
           multiple
           onChange={handleFileChange}
           className="hidden"
-          aria-label="Upload PDF files"
+          aria-label={t('merge.upload')}
         />
       </div>
 
       {/* Selected Files */}
       {files.length > 0 && (
         <div className="space-y-2">
-          <h3 className="text-white font-medium">Selected Files ({files.length})</h3>
+          <h3 className="text-white font-medium">{t('selectedFiles.title')} ({files.length})</h3>
           {files.map((file, index) => (
             <div
               key={index}
@@ -116,7 +118,7 @@ function MergePDF() {
               <button
                 onClick={() => removeFile(index)}
                 className="text-red-400 hover:text-red-300 transition-colors"
-                aria-label="Remove file"
+                aria-label={t('button.remove')}
               >
                 <X className="w-5 h-5" />
               </button>
@@ -129,13 +131,13 @@ function MergePDF() {
       <div>
         <label className="flex items-center gap-2 text-white mb-2">
           <Lock className="w-4 h-4" />
-          Password Protection (Optional)
+          {t('password.placeholder') ? t('password.placeholder') : 'Password Protection (Optional)'}
         </label>
         <input
           type="password"
           value={password}
           onChange={(e) => setPassword(e.target.value)}
-          placeholder="Enter password to protect merged PDF"
+          placeholder={t('password.placeholder')}
           className="w-full px-4 py-2 bg-gray-700 text-white rounded-lg border border-gray-600 focus:border-blue-500 focus:outline-none"
         />
       </div>
@@ -144,13 +146,13 @@ function MergePDF() {
       <div>
         <label className="flex items-center gap-2 text-white mb-2">
           <FileText className="w-4 h-4" />
-          Output Filename
+          {t('output.filename')}
         </label>
         <input
           type="text"
           value={filename}
           onChange={(e) => setFilename(e.target.value)}
-          placeholder="merged.pdf"
+          placeholder={t('output.filename')}
           className="w-full px-4 py-2 bg-gray-700 text-white rounded-lg border border-gray-600 focus:border-blue-500 focus:outline-none"
         />
       </div>
@@ -166,17 +168,17 @@ function MergePDF() {
       <button
         onClick={handleMerge}
         disabled={loading || files.length < 2}
-        className="w-full bg-blue-600 hover:bg-blue-700 disabled:bg-gray-600 disabled:cursor-not-allowed text-white font-medium py-3 px-4 sm:px-6 rounded-lg transition-colors flex items-center justify-center gap-2 text-sm sm:text-base"
+        className="w-full bg-blue-600 hover:bg-blue-700 disabled:bg-gray-600 disabled:cursor-not-allowed text-white font-medium py-3 px-4 sm:px-6 rounded-lg transition-colors flex items-center justify-center gap-2 text-sm sm:text-base cursor-pointer"
       >
         {loading ? (
           <>
             <Loader2 className="w-5 h-5 animate-spin" />
-            Merging PDFs...
+            {t('merge.merging')}
           </>
         ) : (
           <>
             <Download className="w-5 h-5" />
-            Merge & Download
+            {t('merge.mergeButton')}
           </>
         )}
       </button>

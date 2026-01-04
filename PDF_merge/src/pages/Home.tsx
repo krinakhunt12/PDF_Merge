@@ -1,4 +1,5 @@
 import { useState, lazy, Suspense } from 'react'
+import { useTranslation } from 'react-i18next'
 import { Loader2 } from 'lucide-react'
 import { 
   FileText, 
@@ -47,37 +48,38 @@ interface StepCard {
 
 function Home() {
   const [activeTab, setActiveTab] = useState<TabType>('merge')
+  const { t } = useTranslation()
 
   const features: FeatureCard[] = [
     {
       icon: <Zap className="w-6 h-6" />,
-      title: 'Lightning Fast Processing',
-      description: 'Process PDFs in seconds with our highly optimized algorithms and server infrastructure'
+      title: t('features.lightning.title'),
+      description: t('features.lightning.description')
     },
     {
       icon: <Shield className="w-6 h-6" />,
-      title: 'Bank-Grade Security',
-      description: 'Your files are encrypted during transfer and processed securely. Nothing is stored permanently'
+      title: t('features.security.title'),
+      description: t('features.security.description')
     },
     {
       icon: <Sparkles className="w-6 h-6" />,
-      title: 'Intuitive Interface',
-      description: 'Clean, modern design that makes complex PDF operations simple for everyone'
+      title: t('features.intuitive.title'),
+      description: t('features.intuitive.description')
     },
     {
       icon: <Layers className="w-6 h-6" />,
-      title: 'Batch Operations',
-      description: 'Merge multiple PDFs or split documents in bulk with drag-and-drop support'
+      title: t('features.batch.title'),
+      description: t('features.batch.description')
     },
     {
       icon: <Download className="w-6 h-6" />,
-      title: 'No File Limits',
-      description: 'Process PDFs of any size without restrictions on file dimensions or page count'
+      title: t('features.nolimits.title'),
+      description: t('features.nolimits.description')
     },
     {
       icon: <Lock className="w-6 h-6" />,
-      title: '100% Privacy',
-      description: 'All operations happen locally. Your sensitive documents never leave your control'
+      title: t('features.privacy.title'),
+      description: t('features.privacy.description')
     }
   ]
 
@@ -85,22 +87,22 @@ function Home() {
     {
       icon: <Users className="w-8 h-8" />,
       value: '50K+',
-      label: 'Active Users'
+      label: t('stats.activeUsers.label')
     },
     {
       icon: <FileText className="w-8 h-8" />,
       value: '1M+',
-      label: 'PDFs Processed'
+      label: t('stats.pdfsProcessed.label')
     },
     {
       icon: <Star className="w-8 h-8" />,
       value: '4.9/5',
-      label: 'User Rating'
+      label: t('stats.userRating.label')
     },
     {
       icon: <TrendingUp className="w-8 h-8" />,
       value: '99.9%',
-      label: 'Uptime'
+      label: t('stats.uptime.label')
     }
   ]
 
@@ -108,26 +110,26 @@ function Home() {
     {
       number: 1,
       icon: <Upload className="w-8 h-8" />,
-      title: 'Upload Your Files',
-      description: 'Drag and drop or click to select PDF files from your device. Supports multiple file selection.'
+      title: t('steps.upload.title'),
+      description: t('steps.upload.description')
     },
     {
       number: 2,
       icon: <Layers className="w-8 h-8" />,
-      title: 'Choose Operation',
-      description: 'Select whether to merge multiple PDFs, split into pages, or extract specific page ranges.'
+      title: t('steps.choose.title'),
+      description: t('steps.choose.description')
     },
     {
       number: 3,
       icon: <Zap className="w-8 h-8" />,
-      title: 'Process Instantly',
-      description: 'Our powerful engine processes your documents in seconds with optimal quality preservation.'
+      title: t('steps.process.title'),
+      description: t('steps.process.description')
     },
     {
       number: 4,
       icon: <Download className="w-8 h-8" />,
-      title: 'Download Results',
-      description: 'Get your processed files instantly. Results are available for immediate download.'
+      title: t('steps.download.title'),
+      description: t('steps.download.description')
     }
   ]
 
@@ -148,12 +150,11 @@ function Home() {
               <Sparkles className="w-6 h-6 text-yellow-400 absolute -top-2 -right-2 animate-spin-slow" />
             </div>
             <h1 className="text-4xl sm:text-5xl md:text-6xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-blue-400 via-purple-400 to-pink-400">
-              PDF Operations
+              {t('home.title')}
             </h1>
           </div>
           <p className="text-gray-300 text-base sm:text-lg md:text-xl max-w-2xl mx-auto leading-relaxed">
-            Professional PDF tools for merging, splitting, and managing documents with ease.
-            Fast, secure, and completely free.
+            {t('home.subtitle')}
           </p>
         </header>
 
@@ -182,8 +183,8 @@ function Home() {
         {/* Features Grid */}
         <div className="max-w-6xl mx-auto mb-16">
           <div className="text-center mb-12">
-            <h2 className="text-3xl font-bold text-white mb-3">Why Choose Our PDF Tools?</h2>
-            <p className="text-gray-400 max-w-2xl mx-auto">Everything you need to work with PDFs efficiently and securely</p>
+            <h2 className="text-3xl font-bold text-white mb-3">{t('features.heading')}</h2>
+            <p className="text-gray-400 max-w-2xl mx-auto">{t('features.sub')}</p>
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {features.map((feature, index) => (
@@ -208,8 +209,8 @@ function Home() {
         {/* How It Works Section */}
         <div className="max-w-6xl mx-auto mb-16">
           <div className="text-center mb-12">
-            <h2 className="text-3xl font-bold text-white mb-3">How It Works</h2>
-            <p className="text-gray-400 max-w-2xl mx-auto">Four simple steps to manage your PDF documents</p>
+            <h2 className="text-3xl font-bold text-white mb-3">{t('how.heading')}</h2>
+            <p className="text-gray-400 max-w-2xl mx-auto">{t('how.sub')}</p>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
             {steps.map((step, index) => (
@@ -239,7 +240,7 @@ function Home() {
           <div className="flex flex-col sm:flex-row gap-3 bg-gray-800/50 p-3 rounded-xl backdrop-blur-sm border border-gray-700/50">
             <button
               onClick={() => setActiveTab('merge')}
-              className={`flex-1 py-3 px-4 sm:py-4 sm:px-6 rounded-lg font-semibold text-sm sm:text-base transition-all duration-300 ${
+              className={`flex-1 py-3 px-4 sm:py-4 sm:px-6 rounded-lg font-semibold text-sm sm:text-base transition-all duration-300 cursor-pointer ${
                 activeTab === 'merge'
                   ? 'bg-gradient-to-r from-blue-600 to-blue-500 text-white shadow-lg shadow-blue-500/50 transform scale-105'
                   : 'bg-transparent text-gray-300 hover:bg-gray-700/50 hover:text-white'
@@ -247,12 +248,12 @@ function Home() {
             >
               <span className="flex items-center justify-center gap-2">
                 <FileText className="w-5 h-5" />
-                Merge PDFs
+                {t('tab.merge')}
               </span>
             </button>
             <button
               onClick={() => setActiveTab('split-pages')}
-              className={`flex-1 py-3 px-4 sm:py-4 sm:px-6 rounded-lg font-semibold text-sm sm:text-base transition-all duration-300 ${
+              className={`flex-1 py-3 px-4 sm:py-4 sm:px-6 rounded-lg font-semibold text-sm sm:text-base transition-all duration-300 cursor-pointer ${
                 activeTab === 'split-pages'
                   ? 'bg-gradient-to-r from-purple-600 to-purple-500 text-white shadow-lg shadow-purple-500/50 transform scale-105'
                   : 'bg-transparent text-gray-300 hover:bg-gray-700/50 hover:text-white'
@@ -260,12 +261,12 @@ function Home() {
             >
               <span className="flex items-center justify-center gap-2">
                 <FileText className="w-5 h-5" />
-                Split into Pages
+                {t('tab.splitPages')}
               </span>
             </button>
             <button
               onClick={() => setActiveTab('split-range')}
-              className={`flex-1 py-3 px-4 sm:py-4 sm:px-6 rounded-lg font-semibold text-sm sm:text-base transition-all duration-300 ${
+              className={`flex-1 py-3 px-4 sm:py-4 sm:px-6 rounded-lg font-semibold text-sm sm:text-base transition-all duration-300 cursor-pointer ${
                 activeTab === 'split-range'
                   ? 'bg-gradient-to-r from-pink-600 to-pink-500 text-white shadow-lg shadow-pink-500/50 transform scale-105'
                   : 'bg-transparent text-gray-300 hover:bg-gray-700/50 hover:text-white'
@@ -273,7 +274,7 @@ function Home() {
             >
               <span className="flex items-center justify-center gap-2">
                 <FileText className="w-5 h-5" />
-                Split by Range
+                {t('tab.splitRange')}
               </span>
             </button>
           </div>

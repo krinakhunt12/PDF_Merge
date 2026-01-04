@@ -1,4 +1,5 @@
 import { createContext, useContext, useState, useCallback, type ReactNode } from 'react';
+import { useTranslation } from 'react-i18next'
 import { X, CheckCircle, AlertCircle, Info, AlertTriangle } from 'lucide-react';
 
 type ToastType = 'success' | 'error' | 'info' | 'warning';
@@ -34,6 +35,7 @@ interface ToastProviderProps {
 
 export const ToastProvider = ({ children }: ToastProviderProps) => {
   const [toasts, setToasts] = useState<Toast[]>([]);
+  const { t } = useTranslation()
 
   const removeToast = useCallback((id: string) => {
     setToasts((prev) => prev.filter((toast) => toast.id !== id));
@@ -119,7 +121,7 @@ export const ToastProvider = ({ children }: ToastProviderProps) => {
             <button
               onClick={() => removeToast(toast.id)}
               className="text-white/80 hover:text-white transition-colors"
-              aria-label="Close notification"
+              aria-label={t('toast.close')}
             >
               <X className="w-4 h-4" />
             </button>
